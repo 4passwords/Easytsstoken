@@ -1,4 +1,3 @@
-# Easytsstoken
 # Easytsstoken an Thycotic Secret Server Get Token wrapper    
 
 script features:
