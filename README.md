@@ -20,14 +20,18 @@ example syntax:
     easytsstoken.ps1 -urllocal https://url -useotpsecrets $false -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring
 
 fully automated syntax:
+
     easytsstoken.ps1 -urllocal https://url -useotpsecrets $true -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring -PrimaryTSSUserSecureStringOTPSecret $testotplocalsecure
 
 fully automated with an standby secret server syntax: ( even if accounts are the same on both secret servers with AD logins, you will have two different OTP's if using google authenticators
+
     easytsstoken.ps1 -urllocal https://url -urlremote https://url -UseSameUseridandPasswordforStandbyTSS $true -useotpsecrets $true -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring -PrimaryTSSUserSecureStringOTPSecret $testotplocalsecure -StandbyTSSUserSecureStringOTPSecret $testotpremotesecure
 
 fully automated with an standby secret server and have seperated useraccounts and otp's on both secret servers
+
     easytsstoken.ps1 -urllocal https://url -urlremote https://url -UseSameUseridandPasswordforStandbyTSS $false -useotpsecrets $true -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring -PrimaryTSSUserSecureStringOTPSecret $testotplocalsecure -StandbyTSSDomain DOMAINREMOTE -StandbyTSSUser USERIDREMOTE -StandbyTSSUSerSecureStringPassword $test1secure -StandbyTSSUserSecureStringOTPSecret $testotpremotesecure
 
 to supply secure strings for the script or command arguments : 
+
     $test1secure = Read-Host -AsSecureString ; $testotplocalsecure  = Read-Host -AsSecureString ; $testotpremotesecure  = Read-Host -AsSecureString
 
