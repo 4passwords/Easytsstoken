@@ -1,6 +1,5 @@
     # Easytsstoken an Thycotic Secret Server Get Token wrapper 
     # By jan.dijk@mccs.nl / 4passwords.com
-    # OTP function code by https://gist.github.com/jonfriesen/234c7471c3e3199f97d5 (jonfriesen & ecspresso )
     #
     # script features:
     #
@@ -27,6 +26,7 @@
     # easytsstoken.ps1 -urllocal https://url -urlremote https://url -UseSameUseridandPasswordforStandbyTSS $false -useotpsecrets $true -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring -PrimaryTSSUserSecureStringOTPSecret $testotplocalsecure -StandbyTSSDomain DOMAINREMOTE -StandbyTSSUser USERIDREMOTE -StandbyTSSUSerSecureStringPassword $test1secure -StandbyTSSUserSecureStringOTPSecret $testotpremotesecure
     # to supply secure strings for the script or command arguments : $test1secure = Read-Host -AsSecureString ; $testotplocalsecure  = Read-Host -AsSecureString ; $testotpremotesecure  = Read-Host -AsSecureString
     #
+    # changelog: 10-07-2020: fixed skipping the otp option 
 
 
     param (
@@ -57,7 +57,7 @@
         [Security.SecureString]$StandbyTSSUserSecureStringOTPSecret
     )
 
-    $tssscriptversion = "1.2.3" 
+    $tssscriptversion = "1.2.3.1" 
 
     # show debug messages
     #$DebugPreference = 'Continue'
@@ -514,83 +514,86 @@ write-debug "localdomain:$localdomain"
 
 write-debug "useotpsecrets:$useotpsecrets" 
 
-if ($($useotpsecrets) -ne $true) {
+if ( $donotuseotp -as [bool] -ne $true ) {
 
-write-debug "useotpsecrets:ok" 
+                    if ($($useotpsecrets) -ne $true) {
 
-        do {
-         #write-host "$(Get-TimeStamp) waiting to the seconds to hit 00 or 30, to minimize the login error, you need to complete the form within 30 seconds"
+                    write-debug "useotpsecrets:ok" 
+
+                            do {
+                             #write-host "$(Get-TimeStamp) waiting to the seconds to hit 00 or 30, to minimize the login error, you need to complete the form within 30 seconds"
  
-          sleep 1
+                              sleep 1
 
 
-        $percent=$(gethalveminutepercent)
+                            $percent=$(gethalveminutepercent)
 
 
-         Write-Progress -Activity "$(Get-TimeStamp) Timing the login on the 00 and 30th second mark to avoid OTP expiration issues. The login form should be completed within 30 seconds, it will be aborted to prevent account locks. Be ready to enter your OTP results, if login errors persist make sure your time is in sync with the server" -PercentComplete $percent
+                             Write-Progress -Activity "$(Get-TimeStamp) Timing the login on the 00 and 30th second mark to avoid OTP expiration issues. The login form should be completed within 30 seconds, it will be aborted to prevent account locks. Be ready to enter your OTP results, if login errors persist make sure your time is in sync with the server" -PercentComplete $percent
 
  
-          if ( $($(date).Second) -eq 00 )  {
-           $executescript = 1
-           Write-Progress -Activity "$(Get-TimeStamp) completed." -Completed -PercentComplete 100
-          }
+                              if ( $($(date).Second) -eq 00 )  {
+                               $executescript = 1
+                               Write-Progress -Activity "$(Get-TimeStamp) completed." -Completed -PercentComplete 100
+                              }
 
-          if ( $($(date).Second) -eq 30 )  {
-           $executescript = 1
-           Write-Progress -Activity "$(Get-TimeStamp) completed." -Completed -PercentComplete 100
-          }
+                              if ( $($(date).Second) -eq 30 )  {
+                               $executescript = 1
+                               Write-Progress -Activity "$(Get-TimeStamp) completed." -Completed -PercentComplete 100
+                              }
 
 
-         } while ( $executescript -eq 0 )
-}
+                             } while ( $executescript -eq 0 )
+                    }
 
-# get the time to calculate to safely login
-$fetchtime1=$(date)
+                    # get the time to calculate to safely login
+                    $fetchtime1=$(date)
 
         
-    if ($($useotpsecrets) -eq $true) {
+                        if ($($useotpsecrets) -eq $true) {
 
-    if ($($PrimaryTSSUserSecureStringOTPSecret) -eq $null ) { 
-            $localotpsecret = Read-Host -Prompt "$(Get-TimeStamp) Enter your primary TSS OTP secret" -AsSecureString;
-                if ( $localotpsecret -eq '') { 
-                    Write-Error "the otp secret cannot be empty, tryagain"
-                    cleanupvars
-                    exit 1
-                    }
-            } else {
-            $localotpsecret = $PrimaryTSSUserSecureStringOTPSecret
-            }
-    
-    } else {
-	    $localotp = Read-Host -Prompt "$(Get-TimeStamp) Enter your primary TSS OTP for 2FA (displayed in your 2FA app) leave empty to skip" -AsSecureString;
-    }
-
-    if ( $urlremote -ne $false ) {
-
-                if ($($UseSameUseridandPasswordforStandbyTSS) -eq $true) {
-	                $remotedomain = $localdomain
-	                $remoteusername = $localusername
-	                $remotepassword = $localpassword
-
-                   }
-  
-                if ($($useotpsecrets) -eq $true) {
-                 write-debug "StandbyTSSUserSecureStringOTPSecret:$StandbyTSSUserSecureStringOTPSecret"
-                        if ( $StandbyTSSUserSecureStringOTPSecret -eq $null ) {
-                            $remoteotpsecret = Read-Host -Prompt "$(Get-TimeStamp) Enter your standby TSS OTP secret" -AsSecureString;
-                            if ( $remoteotpsecret -eq '') { 
-                                Write-Error "the otp secret cannot be empty, tryagain"
-                                cleanupvars
-                                exit 1
+                        if ($($PrimaryTSSUserSecureStringOTPSecret) -eq $null ) { 
+                                $localotpsecret = Read-Host -Prompt "$(Get-TimeStamp) Enter your primary TSS OTP secret" -AsSecureString;
+                                    if ( $localotpsecret -eq '') { 
+                                        Write-Error "the otp secret cannot be empty, tryagain"
+                                        cleanupvars
+                                        exit 1
+                                        }
+                                } else {
+                                $localotpsecret = $PrimaryTSSUserSecureStringOTPSecret
                                 }
-                            } else {
-                            $remoteotpsecret = $StandbyTSSUserSecureStringOTPSecret
-                            }
+    
+                        } else {
+	                        $localotp = Read-Host -Prompt "$(Get-TimeStamp) Enter your primary TSS OTP for 2FA (displayed in your 2FA app) leave empty to skip" -AsSecureString;
+                        }
+
+                        if ( $urlremote -ne $false ) {
+
+                                    if ($($UseSameUseridandPasswordforStandbyTSS) -eq $true) {
+	                                    $remotedomain = $localdomain
+	                                    $remoteusername = $localusername
+	                                    $remotepassword = $localpassword
+
+                                       }
+  
+                                    if ($($useotpsecrets) -eq $true) {
+                                     write-debug "StandbyTSSUserSecureStringOTPSecret:$StandbyTSSUserSecureStringOTPSecret"
+                                            if ( $StandbyTSSUserSecureStringOTPSecret -eq $null ) {
+                                                $remoteotpsecret = Read-Host -Prompt "$(Get-TimeStamp) Enter your standby TSS OTP secret" -AsSecureString;
+                                                if ( $remoteotpsecret -eq '') { 
+                                                    Write-Error "the otp secret cannot be empty, tryagain"
+                                                    cleanupvars
+                                                    exit 1
+                                                    }
+                                                } else {
+                                                $remoteotpsecret = $StandbyTSSUserSecureStringOTPSecret
+                                                }
                             
-                    } else {
-	                $remoteotp = Read-Host -Prompt "$(Get-TimeStamp) Enter your standby TSS OTP for 2FA (displayed in your 2FA app) leave empty to skip" -AsSecureString;
-                    }
-            }
+                                        } else {
+	                                    $remoteotp = Read-Host -Prompt "$(Get-TimeStamp) Enter your standby TSS OTP for 2FA (displayed in your 2FA app) leave empty to skip" -AsSecureString;
+                                        }
+                                }
+} # end use otp
 
  if ($($useotpsecrets) -eq $true) {
 
@@ -637,10 +640,17 @@ if ( $urlremote -ne $false ) {
     if ( $remotepassword -eq '' ) { write-error "please supply a value for the requested fields"; cleanupvars ; exit 1  }
 }
 $objlocalCredentials = New-Object System.Management.Automation.PSCredential -ArgumentList $localusername, $localpassword
-$objlocalOTP = New-Object System.Management.Automation.PSCredential -ArgumentList $localusername, $localotp
+
+if ( $donotuseotp -as [bool] -ne $true ) {
+    $objlocalOTP = New-Object System.Management.Automation.PSCredential -ArgumentList $localusername, $localotp
+}
+
 if ( $urlremote -ne $false ) {
     $objremoteCredentials = New-Object System.Management.Automation.PSCredential -ArgumentList $remoteusername, $remotepassword
-    $objremoteOTP = New-Object System.Management.Automation.PSCredential -ArgumentList $remoteusername, $remoteotp
+
+    if ( $donotuseotp -as [bool] -ne $true ) {
+        $objremoteOTP = New-Object System.Management.Automation.PSCredential -ArgumentList $remoteusername, $remoteotp
+    }
 }
 
 # cleanup password vars as they are in the secure objects now
@@ -658,8 +668,9 @@ write-debug $(Get-TimeStamp)
 #check if we should submit login or not to prevent login locks
 $fetchtime2=$(date)
 
-$runtimeineconds=[math]::Round(($fetchtime2-$fetchtime1).TotalSeconds)
-
+if ( $donotuseotp -as [bool] -ne $true ) {
+    $runtimeineconds=[math]::Round(($fetchtime2-$fetchtime1).TotalSeconds)
+}
  write-debug "runtimeineconds:$runtimeineconds"
 
  if ($($useotpsecrets) -ne $true) {
@@ -678,13 +689,22 @@ $runtimeineconds=[math]::Round(($fetchtime2-$fetchtime1).TotalSeconds)
 
 write-host "$(Get-TimeStamp) Setting tsstokenlocal global variable with the api token."
 #Get-TSSToken -tssapimethod rest -tssapiurl $($tssurllocal) -tssapidomain $localdomain -tssapiuserid $($objlocalCredentials.GetNetworkCredential().Username) -tssapipassword $($objlocalCredentials.GetNetworkCredential().Password) -tssotp $($objlocalOTP.GetNetworkCredential().Password)
+
+if ( $donotuseotp -as [bool] -ne $true ) {
 Set-Variable -Scope global -Name tsstokenlocal -value (Get-TSSToken -tssapimethod rest -tssapiurl $($tssurllocal) -tssapidomain $localdomain -tssapiuserid $($objlocalCredentials.GetNetworkCredential().Username) -tssapipassword $($objlocalCredentials.GetNetworkCredential().Password) -tssotp $($objlocalOTP.GetNetworkCredential().Password))
+} else {
+Set-Variable -Scope global -Name tsstokenlocal -value (Get-TSSToken -tssapimethod rest -tssapiurl $($tssurllocal) -tssapidomain $localdomain -tssapiuserid $($objlocalCredentials.GetNetworkCredential().Username) -tssapipassword $($objlocalCredentials.GetNetworkCredential().Password) -tssotp '')
+}
 
 if ( $urlremote -ne $false ) {
     
     write-host "$(Get-TimeStamp) Setting tsstokenremote global variable with the api token."    
     #Get-TSSToken -tssapimethod rest -tssapiurl $($tssurlremote) -tssapidomain $remotedomain -tssapiuserid $($objremoteCredentials.GetNetworkCredential().Username) -tssapipassword $($objremoteCredentials.GetNetworkCredential().Password) -tssotp $($objremoteOTP.GetNetworkCredential().Password)
+    if ( $donotuseotp -as [bool] -ne $true ) {
     Set-Variable -Scope global -Name tsstokenremote -value (Get-TSSToken -tssapimethod rest -tssapiurl $($tssurlremote) -tssapidomain $remotedomain -tssapiuserid $($objremoteCredentials.GetNetworkCredential().Username) -tssapipassword $($objremoteCredentials.GetNetworkCredential().Password) -tssotp $($objremoteOTP.GetNetworkCredential().Password))
+    } else {
+    Set-Variable -Scope global -Name tsstokenremote -value (Get-TSSToken -tssapimethod rest -tssapiurl $($tssurlremote) -tssapidomain $remotedomain -tssapiuserid $($objremoteCredentials.GetNetworkCredential().Username) -tssapipassword $($objremoteCredentials.GetNetworkCredential().Password) -tssotp '')
+    }
 }
 
 #cleanup secure objects
