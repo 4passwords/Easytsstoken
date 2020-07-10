@@ -17,10 +17,10 @@ all options can be supplied as parametes to fully automate.
 
 example syntax:
 
-easytsstoken.ps1 -urllocal https://url -useotpsecrets $false -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring
+    easytsstoken.ps1 -urllocal https://url -useotpsecrets $false -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring
 
 fully automated syntax:
-easytsstoken.ps1 -urllocal https://url -useotpsecrets $true -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring -PrimaryTSSUserSecureStringOTPSecret $testotplocalsecure
+    easytsstoken.ps1 -urllocal https://url -useotpsecrets $true -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring -PrimaryTSSUserSecureStringOTPSecret $testotplocalsecure
 
 fully automated with an standby secret server syntax: ( even if accounts are the same on both secret servers with AD logins, you will have two different OTP's if using google authenticators
 easytsstoken.ps1 -urllocal https://url -urlremote https://url -UseSameUseridandPasswordforStandbyTSS $true -useotpsecrets $true -PrimaryTSSDomain local -PrimaryTSSUSer USERID -PrimaryTSSUSerSecureStringPassword $thisneedstobeasecurestring -PrimaryTSSUserSecureStringOTPSecret $testotplocalsecure -StandbyTSSUserSecureStringOTPSecret $testotpremotesecure
