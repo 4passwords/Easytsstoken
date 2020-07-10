@@ -1,5 +1,6 @@
     # Easytsstoken an Thycotic Secret Server Get Token wrapper 
     # By jan.dijk@mccs.nl / 4passwords.com
+    # OTP function code by https://gist.github.com/jonfriesen/234c7471c3e3199f97d5 (jonfriesen & ecspresso )
     #
     # script features:
     #
