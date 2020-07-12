@@ -19,6 +19,10 @@ you can supply a secure string as password in an commadn argument and or the TOT
 It can fetch a local and a remote secret server session token in one go. for sync scripts  or cloud / on premise syncs
 all options can be supplied as parametes to fully automate.
 
+[[easytoken-example1.png]]
+[[easytoken-example2.png]]
+
+
 ---
 
 Command options:
