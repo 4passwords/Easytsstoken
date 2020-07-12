@@ -23,57 +23,57 @@ Command options:
 
 -urllocal, supply a valid https url, http is prevented by the script as you post a password to an api! this first argument is required.
 
-        -urllocal https://your.domain/secretserver
+    -urllocal https://your.domain/secretserver
         
 -urlremote, supply a standby or secondary secret server to fetch a token for
 
-        -urlremote https://your.domain/secretserver
+    -urlremote https://your.domain/secretserver
 
 -donotuseotp, will not ask TOTP questions it assumes you do not have TOTP configured for you account. it will disable the timing mechanism to safeguard you for accountlocks if TOTP is required.
 
-        -donotuseotp $false, $true or empty, it defaults to $false 
+    -donotuseotp $false, $true or empty, it defaults to $false 
         
 -useotpsecrets, if you want to supply your TOTP Secrets instead of the results, The script will then calculate the TOTP code for you based on the Secret instead of asking you for the results. use with care in how you specify the secret for the script. The related Secrets will then be asked interactive and or can be supplied with secure string object in the arguments PrimaryTSSUserSecureStringOTPSecret and or PrimaryTSSUserSecureStringOTPSecret.
 
-        -useotpsecrets $false, $true or empty, it defaults to $false
+    -useotpsecrets $false, $true or empty, it defaults to $false
 
 -UseSameUseridandPasswordforStandbyTSS, if an urlremote is specified then script will ask you if you want to use the same domain, userid and password for the standby/second secret server
 
-        -UseSameUseridandPasswordforStandbyTSS $true, $false, empty it defaults to $true
+    -UseSameUseridandPasswordforStandbyTSS $true, $false, empty it defaults to $true
 
 -PrimaryTSSDomain, supply the primary secretserver domain
 
-        -PrimaryTSSDomain local, secretserver, empty, it defaults to secretserver
+    -PrimaryTSSDomain local, secretserver, empty, it defaults to secretserver
 
 -PrimaryTSSUSer, supply the userid for the primary secretserver.
 
-        -PrimaryTSSUSer USERID
+    -PrimaryTSSUSer USERID
 
  -PrimaryTSSUSerSecureStringPassword, if you need to interactively run this script with a password, supply a secure string to this script ([Security.SecureString]), it will reject a normal string. also be carefull when you store passwords in scripts, its better to use the SKD kit / client and or integrated windows authentication with a scehduled tasks or service for fully automation. This option together with the -useotpsecrets can fully automate a TOTP login with a stored userid and password. can be helpfull in development sessions to automate.
 
-        -PrimaryTSSUSerSecureStringPassword $securestringobject
+    -PrimaryTSSUSerSecureStringPassword $securestringobject
 
  -PrimaryTSSUserSecureStringOTPSecret, this is the TOTP secret to calculate the TOTP code for you while the script is running. supply a secure string to this script ([Security.SecureString]), it will reject a normal string. 
  
-        -PrimaryTSSUserSecureStringOTPSecret $securestringobject
+    -PrimaryTSSUserSecureStringOTPSecret $securestringobject
  
  -StandbyTSSDomain, supply the standby, secondary secretserver domain, if will not be asked if -UseSameUseridandPasswordforStandbyTSS is set to $true
  
-        -StandbyTSSDomain local, secretserver, empty, it defaults to secretserver
+    -StandbyTSSDomain local, secretserver, empty, it defaults to secretserver
 
 -StandbyTSSUSer, supply the standby, secondary secretserver user , if will not be asked if -UseSameUseridandPasswordforStandbyTSS is set to $true
 
-        -StandbyTSSUSer USERID
+    -StandbyTSSUSer USERID
 
 -StandbyTSSUSerSecureStringPassword, supply a secure string to this script ([Security.SecureString]), it will reject a normal string, further the same applies  as for the PrimaryTSSUSerSecureStringPassword.
 
-        -StandbyTSSUSerSecureStringPassword $securestringobject
+    -StandbyTSSUSerSecureStringPassword $securestringobject
 
 -StandbyTSSUserSecureStringOTPSecret, this is the TOTP secret to calculate the TOTP code for you while the script is running. supply a secure string to this script ([Security.SecureString]), it will reject a normal string. 
 
-        -StandbyTSSUserSecureStringOTPSecret $securestringobject
+    -StandbyTSSUserSecureStringOTPSecret $securestringobject
 
---
+---
 
 example syntax:
 
