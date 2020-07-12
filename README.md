@@ -55,7 +55,7 @@ Command options:
 
     -PrimaryTSSUSer USERID
 
- -PrimaryTSSUSerSecureStringPassword, if you need to interactively run this script with a password, supply a secure string to this script ([Security.SecureString]), it will reject a normal string. also be carefull when you store passwords in scripts, its better to use the SKD kit / client and or integrated windows authentication with a scehduled tasks or service for fully automation. This option together with the -useotpsecrets can fully automate a TOTP login with a stored userid and password. can be helpfull in development sessions to automate.
+ -PrimaryTSSUSerSecureStringPassword, if you need to interactively run this script with a password, supply a secure string to this script ([Security.SecureString]), it will reject a normal string. also be carefull when you store passwords in scripts, its better to use the SDK kit / client and or integrated windows authentication with a scheduled tasks or service for fully automation. This option together with the -useotpsecrets can fully automate a TOTP login with a stored userid and password. can be helpfull in development sessions to automate.
 
     -PrimaryTSSUSerSecureStringPassword $securestringobject
 
