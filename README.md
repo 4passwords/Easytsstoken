@@ -19,6 +19,8 @@ you can supply a secure string as password in an commadn argument and or the TOT
 It can fetch a local and a remote secret server session token in one go. for sync scripts  or cloud / on premise syncs
 all options can be supplied as parametes to fully automate.
 
+---
+
 Command options:
 
 -urllocal, supply a valid https url, http is prevented by the script as you post a password to an api! this first argument is required.
