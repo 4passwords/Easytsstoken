@@ -20,7 +20,7 @@ It can fetch a local and a remote secret server session token in one go. for syn
 all options can be supplied as parametes to fully automate.
 
 <img src="easytoken-example1.png"></img>
-<img src="easytoken-example2.png"></img>
+<img src="easytoken-example3.png"></img>
 
 
 ---
